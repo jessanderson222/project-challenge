@@ -2,6 +2,7 @@
   <%= f.input :name %>
   <%= f.input :description, as: :text %>
   <%= f.input :image, as: :file %>
+  <%= f.hidden_field :owner_id, value: @user.id %>
 
   <% if @dog.images.any? %>
     <%= image_tag @dog.images.first %>

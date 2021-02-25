@@ -15,6 +15,7 @@ class DogsController < ApplicationController
   # GET /dogs/new
   def new
     @dog = Dog.new
+    @user = current_user
   end
 
   # GET /dogs/1/edit
@@ -25,6 +26,7 @@ class DogsController < ApplicationController
   # POST /dogs.json
   def create
     @dog = Dog.new(dog_params)
+    @user = current_user
 
     respond_to do |format|
       if @dog.save
@@ -42,8 +44,10 @@ class DogsController < ApplicationController
   # PATCH/PUT /dogs/1
   # PATCH/PUT /dogs/1.json
   def update
+    @owner = @dog.owner
+    
     respond_to do |format|
-      if @dog.update(dog_params)
+      if @owner == current_user && @dog.update(dog_params)
         @dog.images.attach(params[:dog][:image]) if params[:dog][:image].present?
 
         format.html { redirect_to @dog, notice: 'Dog was successfully updated.' }
@@ -73,6 +77,6 @@ class DogsController < ApplicationController
 
     # Never trust parameters from the scary internet, only allow the white list through.
     def dog_params
-      params.require(:dog).permit(:name, :description, :images)
+      params.require(:dog).permit(:name, :description, :images, :owner, :owner_id)
     end
 end
